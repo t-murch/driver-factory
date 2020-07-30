@@ -4,7 +4,9 @@
 
 2. **Add PVC for clients:** oc apply -f client-pvc.yaml
 
-2. **Patch Conductor StatefulSet:** kubectl patch statefulset is-en-conductor --patch "$(cat ds-patch.yaml)"
+3. **Make sure PVC is created and bound:** oc get pvc | grep ds-clients
+
+4. **Patch Conductor StatefulSet:** kubectl patch statefulset is-en-conductor --patch "$(cat ds-patch.yaml)"
 
 
 This adds a PVC, a sidecar which adds files to the PVC, and modifies DataStage slightly to use the PVC for binaries 
