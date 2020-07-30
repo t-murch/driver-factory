@@ -1,4 +1,4 @@
-**These steps add sftp client to datastage**
+## These steps add sftp client to datastage
 
 1. Backup your configuration: oc get statefulset is-en-conductor -o yaml > is-en-conductor.yaml.backup
 
