@@ -1,0 +1,22 @@
+spec:
+  template:
+    spec:
+      containers:
+      - name: sftp
+        image: docker.io/afeiszli/sftp-client-transfer:latest
+        volumeMounts:
+        - mountPath: /destination
+          name: clients
+      - name: iis-en-conductor
+        volumeMounts:
+        - mountPath: /clients
+          name: clients
+        env:
+        - name: LD_LIBRARY_PATH
+          value: "/opt/IBM/InformationServer/Server/biginsights/IHC/c++/Linux-amd64-64/lib:/opt/IBM/InformationServer/Server/branded_odbc/lib:/opt/IBM/InformationServer/Server/DSComponents/lib:/opt/IBM/InformationServer/Server/DSComponents/bin:/opt/IBM/InformationServer/Server/DSEngine/lib:/opt/IBM/InformationServer/Server/DSEngine/uvdlls:/opt/IBM/InformationServer/Server/PXEngine/lib:/opt/IBM/InformationServer/jdk/jre/lib/amd64/j9vm:/opt/IBM/InformationServer/jdk/jre/lib/amd64:/opt/IBM/InformationServer/ASBNode/lib/cpp:/opt/IBM/InformationServer/ASBNode/apps/proxy/cpp/linux-all-x86_64:/clients/lib64"
+        - name: PATH
+          value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/IBM/InformationServer/initScripts:/clients/usr/bin"
+      volumes:
+      - name: clients
+        persistentVolumeClaim:
+          claimName: ds-clients
