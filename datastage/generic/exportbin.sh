@@ -50,4 +50,4 @@ read -p "Please provide Project/Namespace: " oc_project
 
 oc login -u $oc_username -p $oc_password $oc_url -n $oc_project
 
-oc rsync "./${TARGET_FOLDER}" $oc_pod:/home/$TARGET_FOLDER
+oc rsync "./${TARGET_FOLDER}" $oc_pod:/data/$TARGET_FOLDER
