@@ -49,32 +49,24 @@ fi
 
 # Prompt user into Openshift - using linux read, save to variable.
 
-# read -p "Please enter Openshift Login Name: " oc_username #
+read -p "Please provide Target Pod Name: " oc_pod # is-en-conductor-0
 
-# read -p "Please enter Openshift Password: " -r -s oc_password # $(oc whoami -t)
+read -p "Please provide Project/Namespace: " oc_project # zen
 
-# read -p "Please provide Openshift URL: " oc_url # oc version |grep -Eo 'https://[^ >]+'|head -1
+echo "---> Confirming correct Openshift Project"
+oc project $oc_project
 
-# read -p "Please provide Target Pod Name: " oc_pod # is-en-conductor-0
+oc exec $oc_pod -- mkdir -v --parents /clients/$TARGET_FOLDER
 
-# read -p "Please provide Project/Namespace: " oc_project # zen
+echo "---> Syncing Target Folder with Pod directory."
+oc rsync $TARGET_FOLDER/ $oc_pod:/clients/$TARGET_FOLDER/
 
-# oc login -u $(oc whoami) -p $(oc whoami -t) $(oc version |grep -Eo 'https://[^ >]+'|head -1) -n mcm-squad
+echo "---> Syncing new binaries in /usr/bin & /lib64. "
+oc exec $oc_pod -- rsync -r --verbose /clients/myfiles/usr/bin/ /usr/bin/
 
-oc exec test4 -- mkdir -v --parents /clients/$TARGET_FOLDER
+oc exec $oc_pod -- rsync -r --verbose /clients/myfiles/lib64/ /lib64/
 
-oc rsync $TARGET_FOLDER test4:/clients/$TARGET_FOLDER
+echo "Confirming functionality of new binary..."
+$($PATH_TO_BINARY)
 
-# read -p "Ensuring transfer and directory creation is complete..." -t 5
-
-oc exec test4 -- $(/usr/bin/cp -r -v /clients/myfiles/usr/bin/* /usr/bin/)
-
-# oc exec test4 -- cp -v /clients/myfiles/lib64/ /lib64/
-
-oc exec test4 -- rsync -v /clients/myfiles/lib64/* /lib64/
-
-# oc exec test4 -- /usr/bin/grep -rn --color "export PATH" ~/. 2> /dev/null
-
-# oc exec test4 -n mcm-squad -- source $(/usr/bin/grep -rn --color "export PATH" ~/. 2> /dev/null)
-
-# oc exec test4 -- ssh
+echo "Script Completed. "
